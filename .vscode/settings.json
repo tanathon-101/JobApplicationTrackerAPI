@@ -1,3 +1,5 @@
 {
-    "dotnet.defaultSolution": "JobApplicationTrackerAPI.sln"
+    "dotnet.defaultSolution": "JobApplicationTrackerAPI.sln",
+    "omnisharp.useModernNet": true
+
 }

@@ -1,3 +1,10 @@
+using Xunit;
+using Moq;
+using FluentAssertions;
+using JobApplicationTrackerAPI.Services;
+using JobApplicationTrackerAPI.Repository;
+using JobApplicationTrackerAPI.Model;
+using JobApplicationTrackerAPI.DTOs;
 namespace JobApplicationTrackerAPI.Tests;
 
 public class ApplicationServiceTests
@@ -30,6 +37,6 @@ public class ApplicationServiceTests
 
         // Assert
         result.Id.Should().Be(101);
-        result.Status.Should().Be(ApplicationStatus.Pending);
+        result.Status.Should().Be(ApplicationStatus.Pending.ToString());
     }
 }
