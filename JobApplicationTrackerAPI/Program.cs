@@ -87,8 +87,6 @@ app.UseSwaggerUI(c =>
         c.EnableFilter(); // เพิ่มช่องค้นหา
         c.DisplayOperationId(); // แสดง operation ID
         c.EnablePersistAuthorization();
-        c.InjectStylesheet("/custom-swagger-ui.css");
-
     });
 });
 
