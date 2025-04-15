@@ -3,6 +3,7 @@ using JobApplicationTrackerAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Filters;
+using JobApplicationTrackerAPI.DTOs.CompanyDtos;
 
 
 namespace JobApplicationTrackerAPI.Controllers
@@ -27,10 +28,10 @@ namespace JobApplicationTrackerAPI.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Create(CompanyDto dto) => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Create(CreateCompanyDto dto) => Ok(await _service.CreateAsync(dto));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, CompanyDto dto) =>
+        public async Task<IActionResult> Update(int id, UpdateCompanyDto dto) =>
             await _service.UpdateAsync(id, dto) ? NoContent() : NotFound();
 
         [HttpDelete("{id}")]

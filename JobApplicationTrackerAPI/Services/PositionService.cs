@@ -1,4 +1,5 @@
 using JobApplicationTrackerAPI.DTOs;
+using JobApplicationTrackerAPI.DTOs.PositionDtos;
 using JobApplicationTrackerAPI.Model;
 using MapsterMapper;
 
@@ -20,14 +21,14 @@ namespace JobApplicationTrackerAPI.Services
         public async Task<PositionDto?> GetByIdAsync(int id) =>
             (await _repo.GetByIdAsync(id))?.Let(_mapper.Map<PositionDto>);
 
-        public async Task<PositionDto> CreateAsync(PositionDto dto)
+        public async Task<PositionDto> CreateAsync(CreatePositionDto dto)
         {
             var model = _mapper.Map<Position>(dto);
             model.Id = await _repo.CreateAsync(model);
             return _mapper.Map<PositionDto>(model);
         }
 
-        public async Task<bool> UpdateAsync(int id, PositionDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdatePositionDto dto)
         {
             var model = _mapper.Map<Position>(dto);
             model.Id = id;

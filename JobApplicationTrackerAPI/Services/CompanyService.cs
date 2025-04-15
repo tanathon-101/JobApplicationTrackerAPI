@@ -1,4 +1,5 @@
 using JobApplicationTrackerAPI.DTOs;
+using JobApplicationTrackerAPI.DTOs.CompanyDtos;
 using JobApplicationTrackerAPI.Model;
 using Mapster;
 using MapsterMapper;
@@ -18,14 +19,14 @@ public class CompanyService : ICompanyService
         public async Task<CompanyDto?> GetByIdAsync(int id) =>
             (await _repo.GetByIdAsync(id))?.Let(_mapper.Map<CompanyDto>);
 
-        public async Task<CompanyDto> CreateAsync(CompanyDto dto)
+        public async Task<CompanyDto> CreateAsync(CreateCompanyDto dto)
         {
             var model = _mapper.Map<Company>(dto);
             model.Id = await _repo.CreateAsync(model);
             return _mapper.Map<CompanyDto>(model);
         }
 
-        public async Task<bool> UpdateAsync(int id, CompanyDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdateCompanyDto dto)
         {
             var model = _mapper.Map<Company>(dto);
             model.Id = id;

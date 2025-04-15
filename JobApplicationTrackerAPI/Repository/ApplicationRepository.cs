@@ -3,10 +3,11 @@ using Dapper;
 
 using System.Data;
 using Microsoft.Data.SqlClient;
+using JobApplicationTrackerAPI.DTOs.ApplicationDtos;
 
 namespace JobApplicationTrackerAPI.Repository
 {
-    public class ApplicationRepository:IApplicationRepository
+    public class ApplicationRepository : IApplicationRepository
     {
         private readonly string _connectionString;
 
@@ -17,18 +18,48 @@ namespace JobApplicationTrackerAPI.Repository
 
         private IDbConnection CreateConnection() => new SqlConnection(_connectionString);
 
-        public async Task<IEnumerable<Application>> GetAllAsync()
+        public async Task<IEnumerable<ApplicationWithDetailsDto>> GetAllAsync()
         {
-            const string sql = "SELECT * FROM Applications";
+            const string sql = @"
+        SELECT 
+            a.Id,
+            a.UserId,
+            a.CompanyId,
+            c.Name AS CompanyName,
+            a.PositionId,
+            p.Title AS PositionTitle,
+            a.Status,
+            a.AppliedDate,
+            a.InterviewDate,
+            a.Notes
+        FROM Applications a
+        JOIN Companies c ON a.CompanyId = c.Id
+        JOIN Positions p ON a.PositionId = p.Id";
             using var conn = CreateConnection();
-            return await conn.QueryAsync<Application>(sql);
+            return await conn.QueryAsync<ApplicationWithDetailsDto>(sql);
         }
 
-        public async Task<Application?> GetByIdAsync(int id)
+        public async Task<ApplicationWithDetailsDto?> GetByIdAsync(int id)
         {
-            const string sql = "SELECT * FROM Applications WHERE Id = @Id";
+            const string sql = @"
+        SELECT 
+            a.Id,
+            a.UserId,
+            a.CompanyId,
+            c.Name AS CompanyName,
+            a.PositionId,
+            p.Title AS PositionTitle,
+            a.Status,
+            a.AppliedDate,
+            a.InterviewDate,
+            a.Notes
+        FROM Applications a
+        JOIN Companies c ON a.CompanyId = c.Id
+        JOIN Positions p ON a.PositionId = p.Id
+        WHERE Id = @Id ";
+
             using var conn = CreateConnection();
-            return await conn.QueryFirstOrDefaultAsync<Application>(sql, new { Id = id });
+            return await conn.QueryFirstOrDefaultAsync<ApplicationWithDetailsDto>(sql, new { Id = id });
         }
 
         public async Task<int> CreateAsync(Application application)

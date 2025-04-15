@@ -1,4 +1,5 @@
 using JobApplicationTrackerAPI.DTOs;
+using JobApplicationTrackerAPI.DTOs.ApplicationDtos;
 using JobApplicationTrackerAPI.Model;
 using JobApplicationTrackerAPI.Repository;
 using JobApplicationTrackerAPI.Services.Interface;
@@ -16,16 +17,14 @@ namespace JobApplicationTrackerAPI.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<ApplicationDto>> GetAllAsync()
+        public async Task<IEnumerable<ApplicationWithDetailsDto>> GetAllAsync()
         {
-            var apps = await _repository.GetAllAsync();
-            return apps.Adapt<IEnumerable<ApplicationDto>>();
+            return await _repository.GetAllAsync();
         }
 
-        public async Task<ApplicationDto?> GetByIdAsync(int id)
+        public async Task<ApplicationWithDetailsDto?> GetByIdAsync(int id)
         {
-            var app = await _repository.GetByIdAsync(id);
-            return app?.Adapt<ApplicationDto>();
+          return await _repository.GetByIdAsync(id);
         }
 
         public async Task<ApplicationDto> CreateAsync(CreateApplicationRequest request)

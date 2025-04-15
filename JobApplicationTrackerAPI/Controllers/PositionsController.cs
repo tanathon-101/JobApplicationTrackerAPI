@@ -1,6 +1,7 @@
 using JobApplicationTrackerAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using JobApplicationTrackerAPI.DTOs.PositionDtos;
 
 
 namespace JobApplicationTrackerAPI.Controllers
@@ -25,10 +26,10 @@ namespace JobApplicationTrackerAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PositionDto dto) => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Create(CreatePositionDto dto) => Ok(await _service.CreateAsync(dto));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, PositionDto dto) =>
+        public async Task<IActionResult> Update(int id, UpdatePositionDto dto) =>
             await _service.UpdateAsync(id, dto) ? NoContent() : NotFound();
 
         [HttpDelete("{id}")]
