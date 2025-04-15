@@ -35,7 +35,7 @@ namespace JobApplicationTrackerAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            var isValid = await _service.ValidateCredentialsAsync(dto.Email, dto.PasswordHash);
+            var isValid = await _service.ValidateCredentialsAsync(dto.Email, dto.Password);
             if (!isValid) return Unauthorized("Invalid credentials");
 
             var token = await _service.GenerateJwtTokenAsync(dto.Email);

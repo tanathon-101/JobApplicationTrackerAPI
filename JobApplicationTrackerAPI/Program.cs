@@ -7,17 +7,34 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using JobApplicationTrackerAPI.SwaggerConfig;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register services
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Job Application Tracker API", Version = "v1" });
+    options.SwaggerDoc("v1", new() { Title = "JobApplicationTracker API", Version = "v1" });
+
+    // 🔐 Add JWT Bearer Auth
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token.\n\nExample: \"Bearer eyJhbGciOi...\""
+    });
+
+    options.OperationFilter<AuthorizeOperationFilter>();
+
 });
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,15 +71,28 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+app.UseStaticFiles();
 // Middleware
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Job Application Tracker API");
-    c.RoutePrefix = string.Empty;
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Job Application Tracker API");
+        c.RoutePrefix = string.Empty;
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List); // หรือ .None หรือ .Full
+        c.DefaultModelsExpandDepth(-1); // ซ่อน schemas section
+        c.DisplayRequestDuration(); // แสดงเวลาในการเรียก API
+        c.EnableDeepLinking();
+        c.EnableFilter(); // เพิ่มช่องค้นหา
+        c.DisplayOperationId(); // แสดง operation ID
+        c.EnablePersistAuthorization();
+        c.InjectStylesheet("/custom-swagger-ui.css");
+
+    });
 });
 
-app.UseAuthentication(); // ⬅️ ต้องมาก่อน Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

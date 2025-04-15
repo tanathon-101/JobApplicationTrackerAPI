@@ -2,6 +2,7 @@ using JobApplicationTrackerAPI.DTOs;
 using JobApplicationTrackerAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Filters;
 
 
 namespace JobApplicationTrackerAPI.Controllers
@@ -25,6 +26,7 @@ namespace JobApplicationTrackerAPI.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> Create(CompanyDto dto) => Ok(await _service.CreateAsync(dto));
 
         [HttpPut("{id}")]
