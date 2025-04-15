@@ -1,8 +1,12 @@
 using JobApplicationTrackerAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace JobApplicationTrackerAPI.Controllers
 {
+    [Authorize]
+
     [ApiController]
     [Route("api/[controller]")]
     public class PositionsController : ControllerBase

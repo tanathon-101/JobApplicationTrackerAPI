@@ -9,7 +9,7 @@ namespace JobApplicationTrackerAPI.Repository
     public class CompanyRepository :ICompanyRepository
     {
          private readonly string _connStr;
-        public CompanyRepository(IConfiguration config) => _connStr = config.GetConnectionString("DefaultConnection")!;
+        public CompanyRepository(IConfiguration config) => _connStr = config.GetConnectionString("JobTrackerDb")!;
         private IDbConnection Conn => new SqlConnection(_connStr);
 
         public async Task<IEnumerable<Company>> GetAllAsync() =>

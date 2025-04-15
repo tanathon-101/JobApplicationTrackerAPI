@@ -7,7 +7,7 @@ namespace JobApplicationTrackerAPI.Repository
     public class UserRepository : IUserRepository
     {
         private readonly string _connStr;
-        public UserRepository(IConfiguration config) => _connStr = config.GetConnectionString("DefaultConnection")!;
+        public UserRepository(IConfiguration config) => _connStr = config.GetConnectionString("JobTrackerDb")!;
         private IDbConnection Conn => new SqlConnection(_connStr);
 
         public async Task<IEnumerable<User>> GetAllAsync() =>
@@ -24,5 +24,8 @@ namespace JobApplicationTrackerAPI.Repository
 
         public async Task<bool> DeleteAsync(int id) =>
             await Conn.ExecuteAsync("DELETE FROM Users WHERE Id = @id", new { id }) > 0;
+        public async Task<User?> GetByEmailAsync(string email) =>
+        await Conn.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE Email = @email", new { email });
+
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Data.SqlClient;
 public class PositionRepository : IPositionRepository
 {
     private readonly string _connStr;
-    public PositionRepository(IConfiguration config) => _connStr = config.GetConnectionString("DefaultConnection")!;
+    public PositionRepository(IConfiguration config) => _connStr = config.GetConnectionString("JobTrackerDb")!;
     private IDbConnection Conn => new SqlConnection(_connStr);
 
     public async Task<IEnumerable<Position>> GetAllAsync() =>

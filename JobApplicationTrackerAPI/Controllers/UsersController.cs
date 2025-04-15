@@ -1,4 +1,6 @@
+using JobApplicationTrackerAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace JobApplicationTrackerAPI.Controllers
 {
@@ -7,6 +9,7 @@ namespace JobApplicationTrackerAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;
+
         public UsersController(IUserService service) => _service = service;
 
         [HttpGet]
@@ -20,23 +23,37 @@ namespace JobApplicationTrackerAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserDto dto) => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("Email and password are required.");
+
+            var result = await _service.CreateAsync(dto);
+            return Ok(result);
+        }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserDto dto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            // Simplified demo auth (no token)
-            return dto.Email == "test@example.com" && dto.PasswordHash == "1234"
-                ? Ok("Login success")
-                : Unauthorized("Invalid credentials");
+            var isValid = await _service.ValidateCredentialsAsync(dto.Email, dto.PasswordHash);
+            if (!isValid) return Unauthorized("Invalid credentials");
+
+            var token = await _service.GenerateJwtTokenAsync(dto.Email);
+            return Ok(new { Token = token });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UserDto dto) =>
-            await _service.UpdateAsync(id, dto) ? NoContent() : NotFound();
+        public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDto dto)
+        {
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
+        }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id) =>
-            await _service.DeleteAsync(id) ? NoContent() : NotFound();
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
     }
 }
