@@ -2,6 +2,7 @@ using JobApplicationTrackerAPI.DTOs;
 using JobApplicationTrackerAPI.Model;
 using JobApplicationTrackerAPI.Repository;
 using JobApplicationTrackerAPI.Services.Interface;
+using Mapster;
 
 namespace JobApplicationTrackerAPI.Services
 {

@@ -1,6 +1,5 @@
 using JobApplicationTrackerAPI.Model;
 using Dapper;
-using Microsoft.Extensions.Configuration;
 
 using System.Data;
 using Microsoft.Data.SqlClient;

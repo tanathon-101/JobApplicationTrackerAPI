@@ -1,3 +1,5 @@
+using JobApplicationTrackerAPI.DTOs;
+using JobApplicationTrackerAPI.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobApplicationTrackerAPI.Controllers

@@ -1,0 +1,27 @@
+CREATE TABLE Applications (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    CompanyId INT NOT NULL,
+    PositionId INT NOT NULL,
+    Status INT NOT NULL,
+    AppliedDate DATETIME NOT NULL,
+    InterviewDate DATETIME NULL,
+    Notes NVARCHAR(MAX) NULL
+);
+
+CREATE TABLE Companies (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Website NVARCHAR(255)
+);
+
+CREATE TABLE Positions (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Title NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Email NVARCHAR(100) NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL
+);
