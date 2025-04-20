@@ -1,4 +1,5 @@
 using JobApplicationTrackerAPI.DTOs;
+using JobApplicationTrackerAPI.Services;
 using JobApplicationTrackerAPI.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,23 @@ namespace JobApplicationTrackerAPI.Controllers
     [Route("api/[controller]")]
     public class ApplicationsController : ControllerBase
     {
+
+        private readonly IRabbitMQPublisherService _publisher;
         private readonly IApplicationService _applicationService;
 
-        public ApplicationsController(IApplicationService applicationService)
+        public ApplicationsController(IApplicationService applicationService, IRabbitMQPublisherService publisher)
         {
+            _publisher = publisher;
             _applicationService = applicationService;
         }
 
+        [HttpPost("apply")]
+        public async Task<IActionResult> Apply([FromBody] JobApplicationRequest request)
+        {
+          await  _publisher.PublishAsync(request, "job_application");
+
+            return Ok(new { message = "Applied successfully and message sent!" });
+        }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationDto>>> GetAll()
         {
