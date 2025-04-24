@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using JobApplicationTrackerAPI.SwaggerConfig;
 using System.Text.Json.Serialization;
+using JobApplicationTrackerAPI.Model;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +63,7 @@ var config = TypeAdapterConfig.GlobalSettings;
 config.Scan(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
 builder.Services.AddSingleton<IRabbitMQPublisherService, RabbitMQPublisherService>();
 
 // Register DI
@@ -98,4 +100,5 @@ app.UseSwaggerUI(c =>
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.Urls.Add("http://0.0.0.0:80"); 
 app.Run();

@@ -1,23 +1,20 @@
-# Use the official .NET SDK image for build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-
-# Copy csproj and restore
 COPY JobApplicationTrackerAPI/*.csproj ./JobApplicationTrackerAPI/
 RUN dotnet restore ./JobApplicationTrackerAPI/JobApplicationTrackerAPI.csproj
-
-# Copy the rest and build
 COPY . .
 WORKDIR /src/JobApplicationTrackerAPI
 RUN dotnet publish -c Release -o /app/publish
 
-# Use runtime image for final container
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y netcat-openbsd
+
 COPY --from=build /app/publish .
+COPY wait-for-rabbitmq.sh /wait-for-rabbitmq.sh
+RUN chmod +x /wait-for-rabbitmq.sh
 
-# Expose port
+ENTRYPOINT ["/wait-for-rabbitmq.sh"]
+CMD ["dotnet", "JobApplicationTrackerAPI.dll"]
 EXPOSE 80
-
-# Run the app
-ENTRYPOINT ["dotnet", "JobApplicationTrackerAPI.dll"]
